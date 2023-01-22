@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Stop Car Game</title>
+    <style>
+        .btns {
+            display: flex;
+            align-items: flex-start;
+            flex-direction: row;
+            padding: 10px;
+            margin: 5px;
+            color: brown;
+        }
+        .roadndcliff{
+            display: flex;
+            flex-direction: row;
+            background-color: aquamarine;
+        }
+        #cardiv{
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="contfull">
+        <div class="btns">
+            <button id="startbtn" onclick="start()">Start</button>
+            <button id="stopbtn" onclick="stop()">Stop</button>
+            <button id="disturbtn" onclick="disturb()">Disturb</button>
+            <h4 id="mcounter" style="margin-left: 30px;"></h4>
+        </div><br />
+        <div class="activity">
+            <div id="cardiv" style="width: 200px; height: 120px; margin-left: -150px;">
+                <img src="car.png" id="carimg" alt="A Car" style="width: 200px; height: 120px;"><br />
+            </div>
+            <div class="roadndcliff">
+                <div id="roaddiv" style="height: 20px; width: 1140px; background-color: black;"></div>
+                <div id="cliffdiv" style="height: 600px; width: 20px; background-color: darkblue;"></div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        var driven = -100;
+        var fallcounter = 0, falltoken = 0;
+        var queues = new Array();
+
+        function cliffReached(carDiv) {
+            if(confirm("Cliff reached. Let go of Car?") == true){
+                // let go off car and crash it
+                stopCarCompletely(carDiv);
+                document.getElementById(carDiv).style.marginLeft = "1120px";
+                falling();
+                console.log("car crashed");
+            } else {
+                // clear queue and stop it where it reached
+                stopCarCompletely(carDiv);
+                console.log("car stopped");
+            }
+        }
+        function stopCarCompletely(receivedDiv){
+            var refToCarDiv = document.getElementById(receivedDiv);
+            refToCarDiv.style.marginLeft = "1000px";
+            var qlength = queues.length;
+                for(let i = 0; i < qlength; i++){
+                    var rmq = queues.pop();
+                    window.clearInterval(rmq);
+                    console.log(rmq + " Queue cleared for braking");
+                }
+            console.log("queue cleared");
+        }
+        function disturb(){
+            alert("Driving Paused!");
+        }
+        function start(){
+            var newQno = window.setInterval(keepDriving, 100);
+            queues.push(newQno);
+            console.log("Queue getting created is: " + newQno);
+        }
+        function stop(){
+            var rmQno = queues.pop();
+            console.log("Queue cleared is: " + rmQno);
+            window.clearInterval(rmQno);
+        }
+        function keepDriving(){
+            var refToCarDiv = document.getElementById("cardiv");
+            var refToMCounter = document.getElementById("mcounter");
+            driven = driven + 2;
+            refToMCounter.innerText = driven;
+            refToCarDiv.style.marginLeft = driven + "px";
+            if(refToCarDiv.style.marginLeft == "1048px"){
+                refToMCounter.innerText = refToMCounter.innerText + " - cliff reached";
+                cliffReached("cardiv");
+            }
+            if(refToCarDiv.style.marginLeft >= "800px"){
+                refToMCounter.innerText = refToMCounter.innerText + " - reaching cliff";
+            }
+        }
+        function falling(){
+            //transform: translateY(50vh) rotate(60deg);
+            var refToCarDiv = document.getElementById("cardiv");
+            refToCarDiv.style.transform = "rotate(60deg)";
+            var fqno = window.setInterval(fall.bind(null, "cardiv", "carimg"), 100);
+            falltoken = fqno;
+            console.log("falling interval no: " + fqno);
+        }
+        function fall(divref, internalimgref){
+            var refToCarDiv = document.getElementById(divref);
+            fallcounter = fallcounter + 3;
+            document.getElementById(internalimgref).style.transform = "rotate(60deg)";
+            refToCarDiv.style.transform = "translateY(" + fallcounter + "vh)";
+            if(fallcounter == 90){
+                alert("car has fallen and crashed! refresh page to start again with a fresh car");
+                window.clearInterval(falltoken);
+                refToCarDiv.style.marginLeft = "0px";
+                refToCarDiv.style.transform = "rotate(0deg)";
+                refToCarDiv.style.transform = "translateY(60vh)";
+                document.getElementById("startbtn").disabled = true;
+                document.getElementById("stopbtn").disabled = true;
+                document.getElementById("disturbtn").disabled = true;
+                var refToMCounter = document.getElementById("mcounter");
+                refToMCounter.innerText = refToMCounter.innerText + ", NOTE: Please refresh page in browser ";
+
+            }
+        }
+    </script>
+</body>
+</html>

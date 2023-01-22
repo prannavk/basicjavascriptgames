@@ -1,0 +1,43 @@
+* {
+    background-color: blanchedalmond;   
+    background-image: url('paperbg.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.comboxcontainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.texthds{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.btns{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.button:hover{
+    background-color: blue;
+}
+
+.images{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+}
+
+.simage{
+    height: 240px;
+    width: 360px;
+}
